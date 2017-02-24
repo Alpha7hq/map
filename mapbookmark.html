@@ -1,0 +1,85 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+	<div class="col-md-6">
+		<div id="map" style="height: 400px;
+        width: 100%;"></div>
+	</div>
+	<div class="col-md-6">
+		<input type="text" class="form-control" id="postInput" placeholder="Enter postcode">
+		<button type="button" class="btn btn-default" id="button">Bookmark</button>
+		<label id="fullAddress" value="">
+	</div>
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+
+var formatA;
+var lat1;
+var lng1;
+var map;
+// var myLatLng = {lat: -25.363, lng: 131.044};
+
+function initMap(){
+
+    map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 4,
+      center: {lat: -25.363, lng: 131.044}
+    });
+}
+
+	function updateMap(postCode){
+		var geocoder = new google.maps.Geocoder();
+		geocoder.geocode({
+			  componentRestrictions: {
+			    country: 'UK',
+			    postalCode: postCode
+			  }
+			}
+
+			, function (results, status) {
+			coords_obj = results[0].formatted_address;
+			formatA = coords_obj;
+			lat1 = results[0].geometry.location.lat();
+			lng1 = results[0].geometry.location.lng();
+			console.log("Output: ", coords_obj);
+			console.log("lat1: ", lat1);
+			console.log("lng1: ", lng1);
+			}
+		)
+		var pos = {lat: lat1, lng: lng1};
+		var marker = new google.maps.Marker({
+          position: pos
+          // map: map
+    	});
+    	console.log(marker);
+
+    	marker.setMap(map)
+	}
+
+	$( "#button" ).click(function(){
+	 		var postCode = $('#postInput').val() 	
+	 		console.log("POSTCODE: " + postCode)
+
+	   		// address = {address: "19 Val McKenzie Avenue"};
+	  		updateMap(postCode);
+	  		$('fullAddress').text(formatA);	
+
+	});
+
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDilOsrtSjellp29k9VSJ3Y9GBnIqQkLQY&callback=initMap">
+    </script>
+
+</body>
+
+</html>
+
+
