@@ -11,7 +11,7 @@
 	<div class="col-md-6">
 		<input type="text" class="form-control" id="postInput" placeholder="Enter postcode">
 		<button type="button" class="btn btn-default" id="button">Bookmark</button>
-		<label id="fullAddress" value="">
+        <label id="fullAddress" value=""></label>
 	</div>
 
 
@@ -24,51 +24,50 @@ var formatA;
 var lat1;
 var lng1;
 var map;
-// var myLatLng = {lat: -25.363, lng: 131.044};
-
+var pos = {lat: -25.363, lng: 131.044}
+var postCode = "N77JL";
+var marker;
+    
 function initMap(){
 
+    var geocoder = new google.maps.Geocoder();
     map = new google.maps.Map(document.getElementById('map'), {
       zoom: 4,
-      center: {lat: -25.363, lng: 131.044}
+      center: pos
     });
-}
 
-	function updateMap(postCode){
-		var geocoder = new google.maps.Geocoder();
-		geocoder.geocode({
-			  componentRestrictions: {
-			    country: 'UK',
-			    postalCode: postCode
-			  }
-			}
+            geocoder.geocode({
+                  componentRestrictions: {
+                    country: 'UK',
+                    postalCode: postCode
+                  }
+                }
 
-			, function (results, status) {
-			coords_obj = results[0].formatted_address;
-			formatA = coords_obj;
-			lat1 = results[0].geometry.location.lat();
-			lng1 = results[0].geometry.location.lng();
-			console.log("Output: ", coords_obj);
-			console.log("lat1: ", lat1);
-			console.log("lng1: ", lng1);
-			}
-		)
-		var pos = {lat: lat1, lng: lng1};
-		var marker = new google.maps.Marker({
-          position: pos
-          // map: map
-    	});
-    	console.log(marker);
-
-    	marker.setMap(map)
-	}
+                , function (results, status) {
+                coords_obj = results[0].formatted_address;
+                formatA = coords_obj;
+                lat1 = results[0].geometry.location.lat();
+                lng1 = results[0].geometry.location.lng();
+                console.log("Output: ", coords_obj);
+                console.log("lat1: ", lat1);
+                console.log("lng1: ", lng1);
+                }
+            );
+    
+        }
 
 	$( "#button" ).click(function(){
-	 		var postCode = $('#postInput').val() 	
+	 		postCode = $('#postInput').val() 	
 	 		console.log("POSTCODE: " + postCode)
 
 	   		// address = {address: "19 Val McKenzie Avenue"};
-	  		updateMap(postCode);
+	  		initMap(postCode);
+            pos = {lat: lat1, lng: lng1};
+            marker = new google.maps.Marker({
+                position: pos,
+                map: map
+            });
+            map.setCenter(pos);
 	  		$('fullAddress').text(formatA);	
 
 	});
